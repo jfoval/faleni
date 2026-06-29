@@ -48,7 +48,6 @@ DOMAIN_ORDER = ["people", "mind", "nature", "thing", "action", "quality", "color
                 "speech", "time", "logic", "grammar", "pronoun", "number", "proper"]
 
 NAV = [("Home", "index.html", "home"), ("Learn", "learn.html", "learn"),
-       ("Sounds", "pronounce.html", "sounds"),
        ("Dictionary", "dictionary.html", "dict"), ("Grammar", "spec.html", "grammar"),
        ("Contribute", "contribute.html", "contribute")]
 
@@ -56,7 +55,8 @@ NAV = [("Home", "index.html", "home"), ("Learn", "learn.html", "learn"),
 LINK_MAP = {
     "spec.md": "spec.html", "grammar-extras.md": "extras.html", "coinage.md": "coinage.html",
     "compounds.md": "compounds.html", "readme.md": "index.html", "lexicon.csv": "dictionary.html",
-    "lesson-1.md": "lesson-1.html", "lesson-2.md": "lesson-2.html", "lesson-3.md": "lesson-3.html",
+    "lesson-1.md": "lesson-1.html", "lesson-2.md": "lesson-2.html",
+    "lesson-3.md": "lesson-3.html", "lesson-4.md": "lesson-4.html",
     "faleni.py": "contribute.html", "contributing.md": "contribute.html",
 }
 
@@ -79,7 +79,7 @@ _FRIENDLY = {
     "COINAGE.md": "Coining words", "compounds.md": "the compounds page",
     "lexicon.csv": "the dictionary", "README.md": "the overview",
     "CONTRIBUTING.md": "Contributing", "lesson-1.md": "Lesson 1",
-    "lesson-2.md": "Lesson 2", "lesson-3.md": "Lesson 3",
+    "lesson-2.md": "Lesson 2", "lesson-3.md": "Lesson 3", "lesson-4.md": "Lesson 4",
 }
 
 
@@ -323,8 +323,43 @@ def page(title, desc, content, active, count, current_href):
                 .replace("{{VER}}", asset_version()))
 
 
+def render_cards(items):
+    cells = "".join(
+        '<div class="say-card">'
+        '<button class="say-card-word" data-say="%s" aria-label="Hear %s">%s '
+        '<span class="say-icon" aria-hidden="true">&#128266;</span></button>'
+        '<button class="reveal" type="button" aria-expanded="false">show meaning</button>'
+        '<span class="meaning" hidden>%s</span></div>'
+        % (html.escape(w, quote=True), html.escape(w), html.escape(w), html.escape(g))
+        for w, g in items)
+    return ('<p class="muted">Tap a word to hear it, say it aloud, then reveal the meaning.</p>'
+            '<div class="card-grid">%s</div>' % cells)
+
+
+def _extract_cards(md):
+    """Replace `::cards ... ::` blocks with placeholders; return (md, [card_html])."""
+    cards = []
+
+    def repl(m):
+        items = []
+        for line in m.group(1).strip().splitlines():
+            line = line.strip()
+            if "=" in line:
+                w, g = line.split("=", 1)
+                items.append((w.strip(), g.strip()))
+        cards.append(render_cards(items))
+        return '\n\n<div data-cards="%d"></div>\n\n' % (len(cards) - 1)
+
+    return re.sub(r"(?ms)^::cards[ \t]*\n(.*?)\n::[ \t]*$", repl, md), cards
+
+
 def doc_page(md_filename):
-    return '<article class="prose">%s</article>' % md_to_html(read(os.path.join(ROOT, md_filename)))
+    md = read(os.path.join(ROOT, md_filename))
+    md2, cards = _extract_cards(md)
+    body = md_to_html(md2)
+    for i, c in enumerate(cards):
+        body = body.replace('<div data-cards="%d"></div>' % i, c)
+    return '<article class="prose">%s</article>' % body
 
 
 def write(name, contents):
@@ -396,11 +431,13 @@ def build_index(rows, count):
 
 def build_learn():
     lessons = [
-        ("lesson-1.html", "Lesson 1 — Your first words",
-         "Sounds, &ldquo;I am&hellip;&rdquo;, saying no, yes/no questions, greetings, your name."),
-        ("lesson-2.html", "Lesson 2 — Doing things",
+        ("lesson-1.html", "Lesson 1 — Sounds: hear &amp; say",
+         "The 16 sounds, the traps English speakers fall into, and the stress rule &mdash; by ear, first."),
+        ("lesson-2.html", "Lesson 2 — Your first words",
+         "Greetings, &ldquo;I am&hellip;&rdquo;, saying no, yes/no questions, your name."),
+        ("lesson-3.html", "Lesson 3 — Doing things",
          "Verbs, objects, open questions, plurals, possession, counting."),
-        ("lesson-3.html", "Lesson 3 — Describing your world",
+        ("lesson-4.html", "Lesson 4 — Describing your world",
          "Adjectives, adverbs, time, space, comparison, and building new words."),
     ]
     cards = "".join(
@@ -409,9 +446,9 @@ def build_learn():
     return """
 <section class="hero" style="padding-bottom:8px">
   <h1>Learn Faleni</h1>
-  <p class="tagline">Three short lessons. By the end you can hold a simple
-  conversation. Each has practice with answers.</p>
-  <p><a class="btn btn-ghost" href="pronounce.html">&#128266; First, hear the sounds</a></p>
+  <p class="tagline">Start by ear. Hear and say the sounds first, then build up to
+  real sentences &mdash; every new word is introduced with audio, so you say it before
+  you read it. Each lesson has practice with answers.</p>
 </section>
 <section class="section">%s
   <p>After the lessons: keep a <a href="compounds.html">compound cheat-sheet</a> handy,
@@ -529,7 +566,7 @@ def build_contribute():
 """ % (repo_attr, fam_options, btn, note, legend)
 
 
-def build_pronounce():
+def build_sounds():
     vowels = [
         ("a", "/a/", "father", "wa", "I / me"),
         ("e", "/e/", "bet (a bit tenser)", "we", "you"),
@@ -543,7 +580,7 @@ def build_pronounce():
         ("s", "/s/", "sun", "sa", "water"), ("h", "/h/", "hat", "ha", "is / does"),
         ("m", "/m/", "man", "ma", "know"), ("n", "/n/", "no", "no", "time"),
         ("l", "/l/", "love", "la", "good"), ("w", "/w/", "water", "wa", "I"),
-        ("j", "/j/", "yes  (the y-sound!)", "ju", "you"),
+        ("j", "/j/", "yes (the y-sound!)", "jeta", "what"),
     ]
 
     def rows(data):
@@ -555,6 +592,10 @@ def build_pronounce():
                html.escape(ex, quote=True), html.escape(ex))
             for letter, ipa, kw, ex, gloss in data)
 
+    def sayb(word):
+        return ('<button class="say-btn" data-say="%s" aria-label="Hear %s" title="Hear it">&#128266;</button>'
+                % (html.escape(word, quote=True), html.escape(word)))
+
     samples = [
         ("faleni", "the name: FA-le-ni"),
         ("wa ha mu we", "I love you"),
@@ -562,52 +603,69 @@ def build_pronounce():
         ("we ha me kema jeta", "what do you want to eat?"),
     ]
     sample_rows = "".join(
-        '<li><span class="fa">%s</span> <button class="say-btn" data-say="%s" '
-        'aria-label="Hear it" title="Hear it">&#128266;</button> &mdash; %s</li>'
-        % (html.escape(fa), html.escape(fa, quote=True), html.escape(en))
+        '<li><span class="fa">%s</span> %s &mdash; %s</li>'
+        % (html.escape(fa), sayb(fa), html.escape(en))
         for fa, en in samples)
 
-    return """
+    return f"""
 <section class="hero" style="padding-bottom:8px">
-  <h1>How Faleni sounds</h1>
-  <p class="tagline">16 sounds, each said exactly one way. Learn them once and you
-  can pronounce every word.</p>
+  <h1>Lesson 1 &middot; Sounds &mdash; hear &amp; say</h1>
+  <p class="tagline">Start by ear. There are 16 sounds, each said exactly one way &mdash;
+  learn them once and you can pronounce every Faleni word correctly, before you ever
+  read it.</p>
 </section>
 
 <section class="section">
-  <p class="lead">Three rules cover all of pronunciation:</p>
+  <h2>First, the three traps</h2>
+  <p class="lead">If you read Faleni like English, these are the three things you'll get
+  wrong. Hear each, then say it back, before anything else.</p>
   <ul>
-    <li><strong>One letter, one sound</strong> &mdash; always. No silent letters, no exceptions.</li>
-    <li><strong>Stress the first syllable</strong> of every word (<span class="fa">FA</span>-le-ni).</li>
-    <li><strong><span class="fa">j</span> = English &ldquo;y&rdquo;</strong> &mdash; the one thing to remember
-      (<span class="fa">ju</span> = &ldquo;you&rdquo;).</li>
+    <li><strong><span class="fa">j</span> = &ldquo;y&rdquo;, never the English &ldquo;j&rdquo;.</strong>
+      The syllable <span class="fa">ju</span> sounds exactly like &ldquo;you&rdquo; {sayb('ju')} &mdash; a
+      perfect reminder. (That's only the <em>sound</em>; the word for &ldquo;you&rdquo; is
+      <span class="fa">we</span>.) So <span class="fa">jeta</span> is &ldquo;YEH-ta&rdquo;, not
+      &ldquo;JEH-ta&rdquo; {sayb('jeta')}</li>
+    <li><strong>Pure vowels &mdash; no gliding.</strong> <span class="fa">o</span> is a clean
+      &ldquo;oh&rdquo;, <span class="fa">e</span> a clean &ldquo;eh&rdquo; (think Spanish, not
+      English) {sayb('wo')} {sayb('we')}</li>
+    <li><strong>Stress the first syllable, always.</strong>
+      <span class="fa">FA</span>-le-ni {sayb('faleni')} &middot;
+      <span class="fa">KE</span>-ma {sayb('kema')}</li>
   </ul>
-  <p class="speech-note muted">&#128266; buttons read the word with your browser's speech
-  engine &mdash; a close approximation. The IPA and English keyword are the exact target.</p>
+  <p class="speech-note muted">&#128266; plays the word with your device's speech engine &mdash;
+  a close approximation. The IPA + English keyword below are the exact target.</p>
 </section>
 
 <section class="section">
   <h2>The 5 vowels</h2>
-  <p>Pure vowels, like Spanish or Japanese &mdash; never gliding. (The examples are the
-  pronouns, which differ only by their vowel.)</p>
+  <p>Pure vowels, like Spanish or Japanese. Hear each, then <strong>say it aloud</strong>.
+  (The examples are the pronouns &mdash; they differ only by their vowel, so they double as a drill.)</p>
   <table class="dict sound-table"><thead><tr><th>Letter</th><th>Sound</th><th>Like</th><th>Example</th></tr></thead>
-  <tbody>%s</tbody></table>
+  <tbody>{rows(vowels)}</tbody></table>
 </section>
 
 <section class="section">
   <h2>The 11 consonants</h2>
   <table class="dict sound-table"><thead><tr><th>Letter</th><th>Sound</th><th>Like</th><th>Example</th></tr></thead>
-  <tbody>%s</tbody></table>
+  <tbody>{rows(cons)}</tbody></table>
   <p class="muted">Voicing doesn't change meaning, so a softer <em>b / d / g / v / z</em> for
   <span class="fa">p / t / k / f / s</span> is still understood &mdash; say what's comfortable.</p>
 </section>
 
 <section class="section">
-  <h2>Hear whole phrases</h2>
-  <ul>%s</ul>
-  <p>Every word in the <a href="dictionary.html">dictionary</a> has a &#128266; button too.</p>
+  <h2>Now say whole phrases</h2>
+  <p>Hear each, then say it back &mdash; you already know enough to pronounce all of these.</p>
+  <ul>{sample_rows}</ul>
 </section>
-""" % (rows(vowels), rows(cons), sample_rows)
+
+<section class="section">
+  <h2>You can now pronounce every word</h2>
+  <p>Because the spelling <em>is</em> the pronunciation, once these 16 sounds are in your ear
+  you can say any Faleni word on sight &mdash; including every one in the
+  <a href="dictionary.html">dictionary</a> (each has its own &#128266;).</p>
+  <p><a class="btn btn-primary" href="lesson-2.html">Next: Lesson 2 &mdash; your first words</a></p>
+</section>
+"""
 
 
 def main():
@@ -628,11 +686,8 @@ def main():
         ("index.html", "Faleni — the easy tongue",
          "An efficient, fully original constructed language with a systematic word engine.",
          build_index(rows, count), "home"),
-        ("learn.html", "Learn Faleni", "Three lessons to start speaking Faleni.",
+        ("learn.html", "Learn Faleni", "Hear, say, then speak — four lessons, audio-first.",
          build_learn(), "learn"),
-        ("pronounce.html", "Faleni pronunciation",
-         "Hear how Faleni sounds — the 16 sounds, each with audio and an English keyword.",
-         build_pronounce(), "sounds"),
         ("dictionary.html", "Faleni dictionary",
          "Search every Faleni word, filterable by meaning-family.",
          build_dictionary(rows, count), "dict"),
@@ -644,12 +699,17 @@ def main():
          doc_page("COINAGE.md"), "contribute"),
         ("compounds.html", "Faleni compounds", "~100 ready-made compounds and the pattern.",
          doc_page("compounds.md"), "learn"),
-        ("lesson-1.html", "Faleni Lesson 1", "Your first Faleni words.",
-         doc_page(os.path.join("lessons", "lesson-1.md")), "learn"),
-        ("lesson-2.html", "Faleni Lesson 2", "Verbs, objects and questions.",
+        ("lesson-1.html", "Faleni Lesson 1 — Sounds",
+         "Hear and say the 16 Faleni sounds, traps first.", build_sounds(), "learn"),
+        ("lesson-2.html", "Faleni Lesson 2 — Your first words",
+         "Greetings, I am, yes/no, your name.",
          doc_page(os.path.join("lessons", "lesson-2.md")), "learn"),
-        ("lesson-3.html", "Faleni Lesson 3", "Describing your world.",
+        ("lesson-3.html", "Faleni Lesson 3 — Doing things",
+         "Verbs, objects, questions, plurals, counting.",
          doc_page(os.path.join("lessons", "lesson-3.md")), "learn"),
+        ("lesson-4.html", "Faleni Lesson 4 — Describing your world",
+         "Adjectives, time, space, comparison, compounds.",
+         doc_page(os.path.join("lessons", "lesson-4.md")), "learn"),
         ("contribute.html", "Contribute to Faleni",
          "Propose a new word; the validator and a maintainer keep it clean.",
          build_contribute(), "contribute"),

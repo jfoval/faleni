@@ -1,68 +1,79 @@
-# Faleni · Lesson 2 — Doing things
+# Faleni · Lesson 2 — Your first words
 
-Now you'll *do* things, act on objects, ask open questions, count, and talk about
-more than one. Still no word ever changes shape.
+You can say the sounds now — that was **[Lesson 1](lesson-1.md)**. Let's use them.
+By the end of this lesson you'll greet someone, say how you are, say no, and give
+your name. Total grammar so far: one rule.
 
 ---
 
-## Verbs go in the same predicate slot
+## Hear these first
 
-A verb is just another thing you put after `ha`:
+Tap each word to hear it, **say it aloud**, then reveal the meaning. These are the
+words this lesson is built from — meet them by ear before you read them in use.
 
-- `wa ha kema` — I eat. · `wi ha kumi` — He sleeps. · `we ha kali` — You walk.
+::cards
+wa = I / me
+we = you
+wi = he / she / they
+masu = happy
+lunu = tired
+luje = hungry
+la = good
+he = not
+::
 
-(Remember rule 6: the same root can be a noun or a verb. `kali` = "walk" the
-action here; `kali wa` could mean "my walk." Position decides.)
+## The one rule: `Subject + ha + Predicate`
 
-## Acting on an object: the object follows the verb
+The little word **`ha`** means "is / does." Everything before it is who/what
+you're talking about; everything after is what's said about them.
 
-- `wa ha kema solo` — I eat **eggs**.
-- `wa ha kesu sa` — I drink **water**.
-- `wa ha mi sopo` — I see **the cat**.
-- `wa ha mu we` — I love **you**.
+> **`wa ha masu`** — *I am happy.* (`wa` = I, `ha` = am, `masu` = happy)
 
-So the predicate is just *verb → object*, head first — the same "head first" you
-already know.
+The three people:
 
-## Two verbs in a row: want to, can
+| `wa` | `we` | `wi` |
+|---|---|---|
+| I / me | you | he / she / it / they |
 
-Stack a second verb to say *want to / can / try to*:
+## Saying how you are
 
-- `wa ha me kema` — I want to eat. (`me` = want)
-- `wa ha melo kake` — I can swim. (`melo` = can)
-- `wi ha mele fa` — They try to speak. (`mele` = try)
+Just put a describing word after `ha`:
 
-## Open questions: the `je-` words
+- `wa ha masu` — I'm happy.
+- `we ha lunu` — You're tired.
+- `wi ha luje` — He/she is hungry.
+- `wa ha lulu` — I'm healthy / well.
 
-Put the question word where the answer would go (no reordering):
+## Saying *not*: `he`
 
-- `we ha kema jeta?` — You eat **what**? = What do you eat?
-- `we ha ka jewa?` — Where do you go? (`ka` = go)
-- `we ha kawi jeni?` — When do you come?
-- `jepi ha kawi?` — Who comes?
+Put **`he`** right before what you deny:
 
-| `jeta` | `jepi` | `jewa` | `jeni` | `jesa` | `jefe` | `jenu` |
-|---|---|---|---|---|---|---|
-| what | who | where | when | why | how | how many |
+- `wa ha he lunu` — I'm **not** tired.
+- `we ha he luje` — You're not hungry.
 
-## More than one: `jo`
+## Asking yes/no: `ho`, and answering `awe` / `ohu`
 
-Add **`jo`** after a noun for plural — including pronouns:
+Add **`ho`** at the end to make a question. Answer with **`awe`** (yes) or
+**`ohu`** (no).
 
-- `sope jo` — dogs · `wa jo` — we · `wi jo` — they
-- `wa jo ha kema` — We eat.
+- `we ha luje ho?` — Are you hungry?
+  - `awe` — Yes. · `ohu` — No. · `ohu, wa ha he luje` — No, I'm not hungry.
 
-## Whose: just put the owner after
+## Greetings & courtesies (set phrases)
 
-- `tu wa` — my house · `sope we` — your dog · `fone wi` — his/her/their name
+Greeting = `la` (good) + the time of day:
 
-## Counting
+- `la nami` — good morning · `la nita` — good day · `la nana` — good evening ·
+  `la noti` — good night
+- `la ka` — goodbye · `fife` — thanks · `he nu` — you're welcome
 
-Digits: `so`0 `ta`1 `ne`2 `ki`3 `fo`4 `pe`5 `lu`6 `si`7 `mo`8 `ku`9 (then `na`10).
-The number follows the noun, like any modifier:
+## Your name
 
-- `sope ki` — three dogs · `taki ne` — two cups
-- `wa ha komu taji ta` — I have one car. (`komu` = have)
+`fone` = name. Possession is just putting the owner after: `fone wa` = "my name."
+
+- `fone we ha jeta?` — What's your name? (`jeta` = what)
+- `fone wa ha ji jano.` — My name is John. (`ji` marks a borrowed name)
+- or simply: `wa ha ji jano.` — I'm John.
 
 ---
 
@@ -70,29 +81,32 @@ The number follows the noun, like any modifier:
 
 | word | meaning | · | word | meaning |
 |---|---|---|---|---|
-| `kema` | eat | · | `me` | want |
-| `kesu` | drink | · | `melo` | can |
-| `mi` | see | · | `mu` | love |
-| `ka` | go | · | `kawi` | come |
-| `kumi` | sleep | · | `komu` | have |
-| `kali` | walk | · | `jo` | (plural) |
-| `sa` | water | · | `solo` | egg |
-| `sope` | dog | · | `taji` | car |
+| `wa` | I | · | `masu` | happy |
+| `we` | you | · | `lunu` | tired |
+| `wi` | he/she/they | · | `luje` | hungry |
+| `ha` | is / does | · | `lulu` | healthy |
+| `he` | not | · | `la` | good |
+| `ho` | (question) | · | `fone` | name |
+| `awe` / `ohu` | yes / no | · | `ji` | (name marker) |
 
 ## Practice
 
 Translate to Faleni:
-1. I see you.
-2. We drink water.
-3. What do you want?
-4. They have two dogs.
-5. Where do you sleep?
+1. I'm tired.
+2. You're not happy.
+3. Are you healthy?
+4. Good morning!
+5. My name is Foval.
 
 <details><summary>Answers</summary>
 
-1. `wa ha mi we`
-2. `wa jo ha kesu sa`
-3. `we ha me jeta?`
-4. `wi jo ha komu sope ne` (or `wi ha komu sope ne`)
-5. `we ha kumi jewa?`
+1. `wa ha lunu`
+2. `we ha he masu`
+3. `we ha lulu ho?`
+4. `la nami!`
+5. `fone wa ha ji fofalo` (or `wa ha ji fofalo`)
 </details>
+
+---
+
+**Next:** [Lesson 3 — Doing things](lesson-3.md) →

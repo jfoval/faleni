@@ -150,6 +150,20 @@ td.decomp { color: var(--muted); font-family: var(--mono); font-size: .85rem; }
 .sound-table td.fa { font-size: 1.4rem; }
 .sound-table .ipa { font-family: var(--mono); color: var(--muted); }
 
+/* Lesson vocab cards (hear -> say -> reveal) */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+.say-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px; text-align: center; box-shadow: var(--shadow); }
+.say-card-word { display: block; width: 100%; background: none; border: none; cursor: pointer;
+  font-family: var(--serif); font-size: 1.3rem; color: var(--accent); padding: 6px; border-radius: 8px; }
+.say-card-word:hover { background: var(--accent-soft); }
+.say-card .reveal { margin-top: 8px; background: var(--accent-soft); color: var(--accent-2);
+  border: none; border-radius: 999px; padding: 4px 12px; font-size: .8rem; cursor: pointer; }
+.say-card .reveal:hover { background: var(--accent); color: #fff; }
+.say-card .meaning { display: block; margin-top: 8px; color: var(--muted); }
+.no-speech .say-card-word { cursor: default; }
+.no-speech .say-icon { display: none; }
+
 /* Contribute form */
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); margin: 20px 0; }
 .field { margin: 12px 0; }

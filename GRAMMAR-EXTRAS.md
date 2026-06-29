@@ -92,7 +92,7 @@ This is opt-in. A learner never has to use it, and nothing requires it.
 
 ## 7. Politeness & greetings (convention, not grammar)
 
-These are set phrases taught in [lessons/lesson-1.md](lessons/lesson-1.md):
+These are set phrases taught in [lessons/lesson-2.md](lessons/lesson-2.md):
 
 - Greeting = `la` (good) + time of day: `la nami` (good morning), `la nita`
   (good day), `la nana` (good evening), `la noti` (good night).

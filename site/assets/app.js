@@ -140,4 +140,18 @@
       if (btn) { e.preventDefault(); speak(btn.getAttribute("data-say")); }
     });
   }
+
+  // --- Lesson cards: reveal the meaning after you've heard & said the word ---
+  document.addEventListener("click", function (e) {
+    var r = e.target && e.target.closest && e.target.closest(".reveal");
+    if (!r) return;
+    var card = r.closest(".say-card");
+    var m = card && card.querySelector(".meaning");
+    if (m) {
+      var show = m.hidden;
+      m.hidden = !show;
+      r.textContent = show ? "hide meaning" : "show meaning";
+      r.setAttribute("aria-expanded", show ? "true" : "false");
+    }
+  });
 })();

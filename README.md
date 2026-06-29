@@ -113,8 +113,9 @@ Build a word you've never seen (head first):
 
 ## Files
 
-- **[lessons/](lessons/)** — the course; start with **[Lesson 1](lessons/lesson-1.md)**.
-  The friendliest way to *learn* Faleni.
+- **[lessons/](lessons/)** — the four-lesson course, audio-first (Lesson 1 = the
+  sounds, by ear). Easiest entry: the live
+  **[Learn page](https://jfoval.github.io/faleni/learn.html)**.
 - **[SPEC.md](SPEC.md)** — the full specification (sounds, onset‑family
   architecture, grammar, word‑building) — the reference.
 - **[GRAMMAR-EXTRAS.md](GRAMMAR-EXTRAS.md)** — numbers tail (decimals, fractions,
