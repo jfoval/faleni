@@ -1,0 +1,28 @@
+name: Validate lexicon
+
+# The governance gate: every change to the dictionary must pass the validator
+# (legal sounds, no collisions) before it can be merged. Zero dependencies.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "lexicon.csv"
+      - "tools/faleni.py"
+      - ".github/workflows/validate-lexicon.yml"
+  pull_request:
+    paths:
+      - "lexicon.csv"
+      - "tools/faleni.py"
+      - ".github/workflows/validate-lexicon.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate the Faleni lexicon
+        run: python3 tools/faleni.py

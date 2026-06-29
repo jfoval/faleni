@@ -1,0 +1,36 @@
+# Faleni website
+
+A zero-runtime static site **generated from `lexicon.csv`** and the markdown docs.
+The dictionary can never drift from the source of truth, because it *is* the
+source of truth, rendered.
+
+## Build & preview
+
+```sh
+# from the repo root
+pip install -r site/requirements.txt   # optional, nicer markdown; build works without it
+python3 site/build.py                  # writes site/dist/
+open site/dist/index.html              # or: python3 -m http.server -d site/dist
+```
+
+## What gets generated
+
+`site/dist/` — `index.html`, `learn.html`, `dictionary.html`, `spec.html`,
+`extras.html`, `coinage.html`, `compounds.html`, `lesson-1..3.html`,
+`contribute.html`, plus `assets/` and `data/lexicon.json`.
+
+## Deploy (GitHub Pages)
+
+Push to GitHub and enable Pages → "GitHub Actions". The included
+[`deploy-pages.yml`](../.github/workflows/deploy-pages.yml) builds and publishes
+`site/dist/` on every push to `main`. Set your repo URL once in
+[`site/build.py`](build.py) (`REPO_URL`) to wire up the "propose a word" button.
+
+## How it's wired
+
+- `build.py` reads `../lexicon.csv` + the `.md` docs, converts markdown, and fills
+  `templates/base.html`.
+- `assets/style.css` and `assets/app.js` are copied verbatim (search/filter, mobile
+  nav, the proposal form are all client-side, no build step needed for them).
+- Editing a word? Edit `lexicon.csv`, run `python3 tools/faleni.py` (must pass),
+  then rebuild. Nothing else to touch.
