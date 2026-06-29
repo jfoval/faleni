@@ -1,5 +1,8 @@
 # Faleni — an efficient, learnable, fully original language
 
+**🌐 Live site: <https://jfoval.github.io/faleni/>** · learn it, browse the
+dictionary, and propose words.
+
 **Faleni** (from *fa* "speak" + *leni* "easy" = *the easy tongue*) is a
 constructed language engineered around one idea:
 
