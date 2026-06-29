@@ -97,7 +97,9 @@
   if (!synth) {
     document.documentElement.classList.add("no-speech");   // CSS hides the buttons
   } else {
-    var VOWEL = { a: "ah", e: "eh", i: "ee", o: "oh", u: "oo" };
+    // English-phonetic cues a TTS voice reads reliably. "oe" (toe/foe/woe) is a
+    // far more dependable /o/ than "oh", which many voices flatten toward /a/.
+    var VOWEL = { a: "ah", e: "eh", i: "ee", o: "oe", u: "oo" };
     var ONSET = { p: "p", t: "t", k: "k", f: "f", s: "s", h: "h",
                   m: "m", n: "n", l: "l", w: "w", j: "y" };
     var faleniToSpeech = function (text) {
