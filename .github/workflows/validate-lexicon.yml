@@ -1,18 +1,21 @@
 name: Validate lexicon
 
 # The governance gate: every change to the dictionary must pass the validator
-# (legal sounds, no collisions) before it can be merged. Zero dependencies.
+# (legal sounds, no collisions, onset-family compliance), and every Faleni token
+# in the lessons must resolve to the lexicon. Zero dependencies.
 
 on:
   push:
     branches: [main]
     paths:
       - "lexicon.csv"
+      - "lessons/**"
       - "tools/faleni.py"
       - ".github/workflows/validate-lexicon.yml"
   pull_request:
     paths:
       - "lexicon.csv"
+      - "lessons/**"
       - "tools/faleni.py"
       - ".github/workflows/validate-lexicon.yml"
 
@@ -24,5 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: Validate the Faleni lexicon
+      - name: Validate the lexicon (legal, no collisions, onset-families)
         run: python3 tools/faleni.py
+      - name: Lint lesson examples (every Faleni token must exist)
+        run: python3 tools/faleni.py lint-examples

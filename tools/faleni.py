@@ -8,6 +8,8 @@ Usage:
     python3 tools/faleni.py check WORD  Check a candidate: legal? taken? right family?
     python3 tools/faleni.py suggest P 40  Emit 40 fresh 2-syllable forms for a family
                                           (consonant onset, or V for vowel-initial).
+    python3 tools/faleni.py contrasts  List opposite pairs; flag confusable (minimal) ones.
+    python3 tools/faleni.py lint-examples  Verify every Faleni token in docs/lessons exists.
 
 The lexicon lives in ../lexicon.csv relative to this script.
 No third-party dependencies; Python 3.6+.
@@ -40,6 +42,23 @@ FAMILY = {
 GRAMMAR_ONSETS = set("hj")   # grammar particles & question words
 PRONOUN_ONSET = "w"          # pronouns & deictics
 
+# Expected onset per content domain — the onset-family invariant the whole
+# a-priori scheme rests on. Closed sets (grammar/pronoun/number/proper) are absent.
+EXPECT_ONSET = {
+    "people": "p", "mind": "m", "nature": "s", "thing": "t", "action": "k",
+    "quality": "l", "color": "l", "speech": "f", "time": "n", "logic": "",
+}
+
+# Curated opposite pairs; `contrasts` flags any that are a 1-sound (minimal) pair.
+ANTONYMS = [
+    ("la", "lo"), ("le", "li"), ("lihe", "luwa"), ("lefa", "lulu"),
+    ("loke", "loko"), ("lope", "lopu"), ("loni", "loti"), ("lapi", "lapo"),
+    ("lewa", "lawi"), ("lewi", "lawo"), ("lika", "luhu"),
+    ("komi", "komo"), ("keke", "keko"), ("kapi", "kapu"), ("kihi", "kihu"),
+    ("kipa", "kine"), ("mepo", "mepu"), ("neki", "neko"), ("neka", "neke"),
+    ("nepa", "nepu"), ("nije", "nupu"), ("nosa", "nusu"),
+]
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 LEXICON = os.path.normpath(os.path.join(HERE, "..", "lexicon.csv"))
 
@@ -55,7 +74,7 @@ def onset(word):
 
 def load():
     with open(LEXICON, newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+        return [r for r in csv.DictReader(f) if (r.get("word") or "").strip()]
 
 
 def is_legal(word):
@@ -84,6 +103,11 @@ def cmd_validate():
             errors.append("COLLISION %-10s (already means: %s)" % (word, seen[word]))
         else:
             seen[word] = row.get("gloss", "")
+        if (row.get("type") or "").strip() == "root":          # onset-family invariant
+            dom = (row.get("domain") or "").strip()
+            if dom in EXPECT_ONSET and onset(word) != EXPECT_ONSET[dom]:
+                errors.append("FAMILY    %-10s (domain '%s' expects '%s-', got '%s-')"
+                              % (word, dom, EXPECT_ONSET[dom] or "V", onset(word) or "V"))
 
     total = len(rows)
     by_type = Counter((r.get("type") or "?").strip() for r in rows)
@@ -206,6 +230,58 @@ def cmd_suggest(onset_arg, n):
     return 0
 
 
+def cmd_contrasts():
+    rows = load()
+    words = set(r["word"] for r in rows)
+    print("Opposite pairs (a 'MINIMAL PAIR' is one sound apart = confusable by ear):")
+    flagged = 0
+    for a, b in ANTONYMS:
+        missing = [w for w in (a, b) if w not in words]
+        if missing:
+            print("  ??  %-6s / %-6s  (not in lexicon: %s)" % (a, b, ", ".join(missing)))
+            continue
+        close = len(a) == len(b) and sum(x != y for x, y in zip(a, b)) == 1
+        if close:
+            flagged += 1
+        print("  %-12s %-6s / %-6s" % ("MINIMAL PAIR" if close else "ok", a, b))
+    print("-" * 44)
+    print("%d of %d opposite pairs are minimal pairs." % (flagged, len(ANTONYMS)))
+    return 0
+
+
+def cmd_lint():
+    """Every Faleni token in the docs/lessons must resolve to the lexicon."""
+    rows = load()
+    known = set(tok for r in rows for tok in (r.get("word") or "").split())
+    ignore = set()
+    base = os.path.dirname(LEXICON)
+    # Scan the lessons only: there, backtick content is reliably Faleni. (Reference
+    # docs legitimately put English glosses / type-names / transliterations in backticks.)
+    ldir = os.path.join(base, "lessons")
+    files = ([os.path.join(ldir, f) for f in sorted(os.listdir(ldir)) if f.endswith(".md")]
+             if os.path.isdir(ldir) else [])
+    span = re.compile(r"`([^`]+)`")
+    edge = re.compile(r"^[^a-z]+|[^a-z]+$")
+    problems = []
+    for path in files:
+        if not os.path.exists(path):
+            continue
+        text = open(path, encoding="utf-8").read()
+        for s in span.findall(text):
+            for raw in s.split():
+                tok = edge.sub("", raw.lower())
+                if tok and is_legal(tok) and tok not in known and tok not in ignore:
+                    problems.append((os.path.basename(path), tok))
+    if problems:
+        print("Unknown Faleni-looking tokens (legal shape but not in the lexicon):")
+        for fn, tok in sorted(set(problems)):
+            print("  %-18s %s" % (fn, tok))
+        print("(if intentional, add it to lexicon.csv or the linter's ignore list)")
+        return 1
+    print("OK - every Faleni token in docs/lessons resolves to the lexicon.")
+    return 0
+
+
 def main(argv):
     if len(argv) <= 1:
         return cmd_validate()
@@ -214,9 +290,16 @@ def main(argv):
         return cmd_free()
     if cmd == "family":
         return cmd_family()
+    if cmd == "contrasts":
+        return cmd_contrasts()
+    if cmd == "lint-examples":
+        return cmd_lint()
     if cmd == "check" and len(argv) >= 3:
         return cmd_check(argv[2])
     if cmd == "suggest" and len(argv) >= 3:
+        if len(argv) >= 4 and not argv[3].isdigit():
+            print("count must be a positive number")
+            return 2
         n = int(argv[3]) if len(argv) >= 4 else 40
         return cmd_suggest(argv[2], n)
     print(__doc__)

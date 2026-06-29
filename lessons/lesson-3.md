@@ -54,9 +54,9 @@ Put the question word where the answer would go (no reordering):
 - `we ha kema jeta?` — You eat **what**? = What do you eat?
 - `we ha ka jewa?` — Where do you go? (`ka` = go)
 - `we ha kawi jeni?` — When do you come?
-- `jepi ha kawi?` — Who comes?
+- `jepa ha kawi?` — Who comes?
 
-| `jeta` | `jepi` | `jewa` | `jeni` | `jesa` | `jefe` | `jenu` |
+| `jeta` | `jepa` | `jewa` | `jeni` | `jesa` | `jefe` | `jenu` |
 |---|---|---|---|---|---|---|
 | what | who | where | when | why | how | how many |
 

@@ -23,7 +23,7 @@ TEMPLATES = os.path.join(HERE, "templates")
 # Set this to your GitHub repo to wire up the "propose a word" button + CI links.
 # Override without editing the file via:  FALENI_REPO_URL=https://github.com/me/repo
 REPO_URL = os.environ.get("FALENI_REPO_URL", "https://github.com/jfoval/faleni")
-REPO_SET = "your-username" not in REPO_URL          # False while it's the placeholder
+REPO_SET = "your-username" not in REPO_URL          # False only if a fork reverts to a placeholder
 
 # Onset -> readable family label + an accent color for the home grid.
 FAMILY_INFO = [
@@ -86,6 +86,8 @@ _FRIENDLY = {
 def _safe_href(url):
     u = (url or "").strip()
     low = u.lower()
+    if u.startswith("//"):                         # protocol-relative -> treat as unsafe
+        return "#"
     if low.startswith(_SAFE_SCHEMES) or u.startswith(("#", "/")) or ":" not in u.split("/")[0]:
         return u
     return "#"                                     # drop javascript:/data:/etc.
@@ -323,22 +325,25 @@ def page(title, desc, content, active, count, current_href):
                 .replace("{{VER}}", asset_version()))
 
 
-def render_cards(items):
-    cells = "".join(
-        '<div class="say-card">'
-        '<button class="say-card-word" data-say="%s" aria-label="Hear %s">%s '
-        '<span class="say-icon" aria-hidden="true">&#128266;</span></button>'
-        '<button class="reveal" type="button" aria-expanded="false">show meaning</button>'
-        '<span class="meaning" hidden>%s</span></div>'
-        % (html.escape(w, quote=True), html.escape(w), html.escape(w), html.escape(g))
-        for w, g in items)
+def render_cards(items, base=0):
+    cells = []
+    for i, (w, g) in enumerate(items):
+        mid = "meaning-%d" % (base + i)            # unique within the page
+        cells.append(
+            '<div class="say-card">'
+            '<button class="say-card-word" data-say="%s" aria-label="Hear %s">%s '
+            '<span class="say-icon" aria-hidden="true">&#128266;</span></button>'
+            '<button class="reveal" type="button" aria-expanded="false" aria-controls="%s">show meaning</button>'
+            '<span class="meaning" id="%s" hidden>%s</span></div>'
+            % (html.escape(w, quote=True), html.escape(w), html.escape(w), mid, mid, html.escape(g)))
     return ('<p class="muted">Tap a word to hear it, say it aloud, then reveal the meaning.</p>'
-            '<div class="card-grid">%s</div>' % cells)
+            '<div class="card-grid">%s</div>' % "".join(cells))
 
 
 def _extract_cards(md):
     """Replace `::cards ... ::` blocks with placeholders; return (md, [card_html])."""
     cards = []
+    total = [0]                                    # running id offset across all blocks
 
     def repl(m):
         items = []
@@ -347,7 +352,8 @@ def _extract_cards(md):
             if "=" in line:
                 w, g = line.split("=", 1)
                 items.append((w.strip(), g.strip()))
-        cards.append(render_cards(items))
+        cards.append(render_cards(items, total[0]))
+        total[0] += len(items)
         return '\n\n<div data-cards="%d"></div>\n\n' % (len(cards) - 1)
 
     return re.sub(r"(?ms)^::cards[ \t]*\n(.*?)\n::[ \t]*$", repl, md), cards

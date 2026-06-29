@@ -121,7 +121,7 @@ you apply while speaking.**
 7. **Negate with `he`,** right before what you deny. `wa ha he fa` = "I don't
    speak."
 8. **Ask yes/no with `ho`** at the end. Ask everything else with a **`je‑`
-   word** (`jeta` what, `jepi` who, `jewa` where, `jeni` when, `jesa` why,
+   word** (`jeta` what, `jepa` who, `jewa` where, `jeni` when, `jesa` why,
    `jefe` how, `jenu` how‑many), placed where the answer would go.
    `we ha ka jewa?` = "Where are you going?"
 9. **Join with `hi` (and) / `hu` (or).** `wa hi we` = "you and I".

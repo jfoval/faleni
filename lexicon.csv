@@ -9,12 +9,12 @@ je,particle,which/what,,grammar,question and determiner base
 ji,particle,(name marker),,grammar,marks a borrowed or proper name that follows
 jo,particle,many/plural,,grammar,after a noun makes it plural; also means many
 jeta,question,what,je+te,grammar,thing-question
-jepi,question,who,je+pi,grammar,person-question
+jepa,question,who,je+pa,grammar,person-question (je + pa person; gender-neutral)
 jewa,question,where,je+wo,grammar,place-question
 jeni,question,when,je+no,grammar,time-question
-jesa,question,why,je+nu,grammar,reason-question
+jesa,question,why,,grammar,reason-question (irregular je- contraction)
 jefe,question,how,je+nofe,grammar,manner-question
-jenu,question,how many/how much,je+ni,grammar,amount-question
+jenu,question,how many/how much,,grammar,amount-question (irregular je- contraction)
 wa,pronoun,I/me/my,,pronoun,
 we,pronoun,you/your,,pronoun,
 wi,pronoun,he/she/it/they/their,,pronoun,gender- and number-neutral
@@ -391,7 +391,7 @@ lite,root,ugly,,quality,
 litu,root,important,,quality,
 life,root,useful,,quality,
 lihe,root,dangerous,,quality,
-lihu,root,safe,,quality,
+luwa,root,safe,,quality,re-coined distinct from lihe (dangerous)
 lije,root,difficult,,quality,
 liju,root,complex,,quality,
 lope,root,rich,,quality,
@@ -416,7 +416,7 @@ luhe,root,tasty,,quality,
 luhu,root,warm,,quality,
 lune,root,cool,,quality,
 lunu,root,tired,,quality,
-lule,root,sick/ill,,quality,
+lefa,root,sick/ill,,quality,re-coined distinct from lulu (healthy)
 lulu,root,healthy,,quality,
 luje,root,hungry,,quality,
 luju,root,thirsty,,quality,

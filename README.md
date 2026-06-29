@@ -126,6 +126,7 @@ Build a word you've never seen (head first):
   to *grow* Faleni.
 - **[lexicon.csv](lexicon.csv)** — the living dictionary (~490 roots, 527 entries).
 - **[tools/faleni.py](tools/faleni.py)** — validator + word generator + helper.
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — how the repo fits together (for contributors / a fresh session).
 
 ## Using the tool
 
