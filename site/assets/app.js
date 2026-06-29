@@ -111,16 +111,29 @@
           }).join("-");
         }).join(", ");
     };
+    // Voices can populate asynchronously; prime them so getVoices() isn't empty.
+    var primeVoices = function () { try { synth.getVoices(); } catch (e) {} };
+    primeVoices();
+    if ("onvoiceschanged" in synth) synth.onvoiceschanged = primeVoices;
+    var pickVoice = function () {
+      var vs = synth.getVoices() || [];
+      var en = vs.filter(function (v) { return /^en/i.test(v.lang); });
+      var local = en.filter(function (v) { return v.localService; });
+      return local[0] || en[0] || null;          // prefer an on-device English voice
+    };
     var speak = function (text) {
       var phon = faleniToSpeech(text);
       if (!phon) return;
-      synth.cancel();
-      var u = new SpeechSynthesisUtterance(phon);
-      u.lang = "en-US";
-      u.rate = 0.82;
-      var voices = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
-      if (voices.length) u.voice = voices[0];
-      synth.speak(u);
+      try {
+        if (synth.speaking || synth.pending) synth.cancel();
+        synth.resume();                           // Chrome silently pauses when idle
+        var u = new SpeechSynthesisUtterance(phon);
+        u.lang = "en-US";
+        u.rate = 0.85;
+        var v = pickVoice();
+        if (v) u.voice = v;
+        synth.speak(u);
+      } catch (e) { /* ignore */ }
     };
     document.addEventListener("click", function (e) {
       var btn = e.target && e.target.closest && e.target.closest("[data-say]");

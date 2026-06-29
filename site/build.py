@@ -7,6 +7,7 @@ falls back to a built-in converter otherwise, so it always builds.
     python3 site/build.py        # then open site/dist/index.html
 """
 import csv
+import hashlib
 import html
 import json
 import os
@@ -298,13 +299,28 @@ def nav_html(active, current_href):
     return "".join(out)
 
 
+_VER = {}
+
+
+def asset_version():
+    """Short content hash of the CSS+JS, used to cache-bust asset URLs."""
+    if "v" not in _VER:
+        h = hashlib.sha1()
+        for fn in ("style.css", "app.js"):
+            with open(os.path.join(ASSETS, fn), "rb") as f:
+                h.update(f.read())
+        _VER["v"] = h.hexdigest()[:8]
+    return _VER["v"]
+
+
 def page(title, desc, content, active, count, current_href):
     base = read(os.path.join(TEMPLATES, "base.html"))
     return (base.replace("{{TITLE}}", html.escape(title))
                 .replace("{{DESC}}", html.escape(desc))
                 .replace("{{NAV}}", nav_html(active, current_href))
                 .replace("{{CONTENT}}", content)
-                .replace("{{COUNT}}", str(count)))
+                .replace("{{COUNT}}", str(count))
+                .replace("{{VER}}", asset_version()))
 
 
 def doc_page(md_filename):
