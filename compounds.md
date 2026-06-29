@@ -1,6 +1,6 @@
 # Faleni — Compound reference
 
-The point of Faleni is that you **don't** need a root for everything. These ~100
+The point of Faleni is that you **don't** need a root for everything. These ~80
 everyday words are all built from existing roots, head-first (the first root is
 *what it is*, the rest narrow it). None of them is a new dictionary entry — they
 fall straight out of the engine. Use them as patterns and make your own.
@@ -118,11 +118,11 @@ fall straight out of the engine. Use them as patterns and make your own.
 ## Compound verbs (serial)
 | Faleni | Parts | Meaning |
 |---|---|---|
-| `pika mu` | start + love | fall in love |
+| `kipa mu` | start + love | fall in love |
 | `kine kema` | finish + eat | finish eating |
 | `fi fa` | read + speak | read aloud |
 | `kali tewi` | walk + road | travel / journey |
 
 Every one of these is reversible and transparent — a learner who knows the roots
 can decode a word they've never seen, and coin one you've never written. That's
-how ~500 roots cover many thousands of meanings.
+how ~490 roots cover many thousands of meanings.

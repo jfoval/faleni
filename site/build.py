@@ -675,12 +675,8 @@ def main():
     if os.path.isdir(DIST):
         shutil.rmtree(DIST)
     os.makedirs(os.path.join(DIST, "assets"))
-    os.makedirs(os.path.join(DIST, "data"))
     for fn in os.listdir(ASSETS):
         shutil.copy(os.path.join(ASSETS, fn), os.path.join(DIST, "assets", fn))
-
-    with open(os.path.join(DIST, "data", "lexicon.json"), "w", encoding="utf-8") as f:
-        json.dump(rows, f, ensure_ascii=False, indent=0)
 
     pages = [
         ("index.html", "Faleni — the easy tongue",
@@ -717,8 +713,7 @@ def main():
     for name, title, desc, content, active in pages:
         write(name, page(title, desc, content, active, count, name))
 
-    print("Built %d pages + lexicon.json (%d entries) -> %s"
-          % (len(pages), count, DIST))
+    print("Built %d pages (%d entries) -> %s" % (len(pages), count, DIST))
     if not REPO_SET:
         print("WARNING: REPO_URL is still the 'your-username' placeholder; the "
               "Contribute CTA is disabled. Set FALENI_REPO_URL or edit build.py.")

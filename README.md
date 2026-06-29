@@ -62,7 +62,7 @@ meaning into every letter became impossible to tell apart by ear.)
 
 ## Why it's efficient
 
-- **Frequency‑weighted length** — the most common ~50 ideas are one syllable;
+- **Frequency‑weighted length** — the most common ~60 ideas are one syllable;
   rare ones are longer. (Zipf's law of abbreviation, made a rule.)
 - **Categoryless roots** — one root works as noun, verb, or adjective by
   position, so you memorize one word, not four.
@@ -139,8 +139,9 @@ python3 tools/faleni.py suggest s 40  # 40 fresh, clean nature-family forms to c
 
 ## Status
 
-**v0.3 — teachable foundation.** ~490 a priori roots (527 entries, 0 collisions),
-the number tail closed ([GRAMMAR-EXTRAS.md](GRAMMAR-EXTRAS.md)), a compound
-reference, and a 3‑lesson course. Enough to hold simple conversations and teach.
-Next steps: keep growing the lexicon in curated batches, then a website/wiki
-generated from `lexicon.csv` and a learning app. See the roadmap in [SPEC.md](SPEC.md).
+**v0.3 — teachable foundation, live.** ~490 a priori roots (527 entries, 0
+collisions), the number tail closed ([GRAMMAR-EXTRAS.md](GRAMMAR-EXTRAS.md)), a
+compound reference, and a four‑lesson audio‑first course — all published as a
+[live site/wiki](https://jfoval.github.io/faleni/) generated from `lexicon.csv`.
+Next steps: keep growing the lexicon in curated batches, add a translator and a
+reference text/reader, and (later) a learning app. See the roadmap in [SPEC.md](SPEC.md).

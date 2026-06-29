@@ -1,4 +1,4 @@
-# Faleni — Language Specification (v0.2)
+# Faleni — Language Specification (v0.3)
 
 This document fully defines Faleni. If something isn't here, it follows from the
 rules here — there are no exceptions hiding elsewhere.
@@ -97,7 +97,7 @@ you apply while speaking.**
 
 | Tier | Length | Used for |
 |---|---|---|
-| Particles + ~50 most common ideas | 1 syllable (`CV`) | `wa`, `ha`, `ka`, `la` |
+| Particles + ~60 most common ideas | 1 syllable (`CV`) | `wa`, `ha`, `ka`, `la` |
 | Common vocabulary | 2 syllables (`CVCV`) | `tuna`, `peni`, `kema` |
 | Compounds, technical, borrowed | 2+ syllables | `teku fa`, `ji amelika` |
 
@@ -231,7 +231,7 @@ and final consonants with a vowel (default `o`/`i`); drop sounds Faleni lacks.
 - **Low learning entropy:** few exception‑free rules ⇒ the whole grammar has a
   tiny description length. That *is* "easy to learn".
 - **Productive, not memorized:** meaning composes, so the effective vocabulary is
-  far larger than the root count. ~165 roots already express thousands of ideas.
+  far larger than the root count. ~490 roots already express thousands of ideas.
 - **Effort tracks frequency:** common things are short, rare things are long, so
   average message length is near‑minimal for real usage.
 
@@ -239,8 +239,8 @@ and final consonants with a vowel (default `o`/`i`); drop sounds Faleni lacks.
 
 ## 10. Status & roadmap
 
-**v0.2 (now):** sounds, the onset‑family architecture, grammar, numbers,
-derivation, borrowing, ~185‑entry a priori lexicon, validator tool. Name verified
+**v0.3 (now):** sounds, the onset‑family architecture, grammar, numbers,
+derivation, borrowing, a ~490‑root / 527‑entry a priori lexicon, validator tool. Name verified
 not to be an existing language.
 
 Natural next steps:

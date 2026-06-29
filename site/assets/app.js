@@ -110,7 +110,7 @@
             var v = s.charAt(s.length - 1);
             var on = s.length > 1 ? (ONSET[s.charAt(0)] || "") : "";
             return on + VOWEL[v];
-          }).join("-");
+          }).join("");                      // one token per word = better word-prosody, clearer final vowel
         }).join(", ");
     };
     // Voices can populate asynchronously; prime them so getVoices() isn't empty.

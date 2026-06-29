@@ -37,17 +37,17 @@ Recap: digits `so`0 `ta`1 `ne`2 `ki`3 `fo`4 `pe`5 `lu`6 `si`7 `mo`8 `ku`9;
 tens/hundreds/thousands `na` `to` `fu`. Build big-part first: `ne na ki` = 23.
 
 **Decimals** — integer, then `nuse` ("point"), then the digits one by one:
-- `ki nuse pa` = 3.5 · `so nuse pe` = 0.5 · `ki nuse te fo` = 3.14
+- `ki nuse pe` = 3.5 · `so nuse pe` = 0.5 · `ki nuse ta fo` = 3.14
 
 **Fractions** — `[numerator] nemo [denominator]` (`nemo` = "part"):
-- `te nemo ne` = 1/2 · `ki nemo fo` = 3/4 · (`nehu` is also a ready-made word for "half")
+- `ta nemo ne` = 1/2 · `ki nemo fo` = 3/4 · (`nehu` is also a ready-made word for "half")
 
 **Ordinals** — number + `nuki` ("-th"), placed after the noun like any modifier:
-- `te nuki` = first · `ne nuki` = second · `ki nuki` = third
+- `ta nuki` = first · `ne nuki` = second · `ki nuki` = third
 - `tepa ki nuki` = the third room
 
 **Negatives** — `noli` ("opposite") before the number:
-- `noli pa` = −5 · `nawa ha noli ne` = "it's −2 degrees" (lit. noon is opposite-2)
+- `noli pe` = −5 · `noli ne` = −2
 
 **Counting things** — number follows the noun: `sope ki` = three dogs.
 

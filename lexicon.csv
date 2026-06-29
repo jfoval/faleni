@@ -507,7 +507,7 @@ niju,root,near,,time,
 nopa,root,far,,time,
 nohu,root,left,,time,
 nono,root,right,,time,
-nuse,root,point (decimal),,time,decimal separator; ki nuse pa = 3.5
+nuse,root,point (decimal),,time,decimal separator; ki nuse pe = 3.5
 nuki,root,-th (ordinal),,time,makes ordinals; ki nuki = third
 awe,root,yes,,logic,
 ohu,root,no (answer),,logic,
