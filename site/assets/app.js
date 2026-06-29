@@ -89,4 +89,42 @@
     form.addEventListener("input", update);
     update();
   }
+
+  // --- Pronunciation: speak any Faleni word via the browser's speech engine ---
+  // Faleni is perfectly phonemic, so we respell it into English-phonetic syllables
+  // (pure vowels, j -> y) and let the synthesizer read it. Stress is first-syllable.
+  var synth = window.speechSynthesis;
+  if (!synth) {
+    document.documentElement.classList.add("no-speech");   // CSS hides the buttons
+  } else {
+    var VOWEL = { a: "ah", e: "eh", i: "ee", o: "oh", u: "oo" };
+    var ONSET = { p: "p", t: "t", k: "k", f: "f", s: "s", h: "h",
+                  m: "m", n: "n", l: "l", w: "w", j: "y" };
+    var faleniToSpeech = function (text) {
+      return text.toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/)
+        .filter(Boolean).map(function (word) {
+          var syl = word.match(/[ptkfshmnlwj]?[aeiou]/g) || [];
+          return syl.map(function (s) {
+            var v = s.charAt(s.length - 1);
+            var on = s.length > 1 ? (ONSET[s.charAt(0)] || "") : "";
+            return on + VOWEL[v];
+          }).join("-");
+        }).join(", ");
+    };
+    var speak = function (text) {
+      var phon = faleniToSpeech(text);
+      if (!phon) return;
+      synth.cancel();
+      var u = new SpeechSynthesisUtterance(phon);
+      u.lang = "en-US";
+      u.rate = 0.82;
+      var voices = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
+      if (voices.length) u.voice = voices[0];
+      synth.speak(u);
+    };
+    document.addEventListener("click", function (e) {
+      var btn = e.target && e.target.closest && e.target.closest("[data-say]");
+      if (btn) { e.preventDefault(); speak(btn.getAttribute("data-say")); }
+    });
+  }
 })();

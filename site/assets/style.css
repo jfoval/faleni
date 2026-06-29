@@ -140,6 +140,16 @@ td.decomp { color: var(--muted); font-family: var(--mono); font-size: .85rem; }
   background: var(--accent-soft); color: var(--accent-2); white-space: nowrap; }
 .dict-empty { padding: 30px; text-align: center; color: var(--muted); display: none; }
 
+/* Pronunciation play buttons */
+.say-btn { background: none; border: none; cursor: pointer; font-size: .95em; line-height: 1;
+  padding: 3px 6px; border-radius: 7px; opacity: .65; vertical-align: baseline; }
+.say-btn:hover { opacity: 1; background: var(--accent-soft); }
+.say-btn:focus-visible { outline: 2px solid var(--accent); opacity: 1; }
+.no-speech .say-btn { display: none; }
+.no-speech .speech-note { display: none; }
+.sound-table td.fa { font-size: 1.4rem; }
+.sound-table .ipa { font-family: var(--mono); color: var(--muted); }
+
 /* Contribute form */
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); margin: 20px 0; }
 .field { margin: 12px 0; }

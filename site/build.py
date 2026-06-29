@@ -47,6 +47,7 @@ DOMAIN_ORDER = ["people", "mind", "nature", "thing", "action", "quality", "color
                 "speech", "time", "logic", "grammar", "pronoun", "number", "proper"]
 
 NAV = [("Home", "index.html", "home"), ("Learn", "learn.html", "learn"),
+       ("Sounds", "pronounce.html", "sounds"),
        ("Dictionary", "dictionary.html", "dict"), ("Grammar", "spec.html", "grammar"),
        ("Contribute", "contribute.html", "contribute")]
 
@@ -394,6 +395,7 @@ def build_learn():
   <h1>Learn Faleni</h1>
   <p class="tagline">Three short lessons. By the end you can hold a simple
   conversation. Each has practice with answers.</p>
+  <p><a class="btn btn-ghost" href="pronounce.html">&#128266; First, hear the sounds</a></p>
 </section>
 <section class="section">%s
   <p>After the lessons: keep a <a href="compounds.html">compound cheat-sheet</a> handy,
@@ -417,11 +419,14 @@ def build_dictionary(rows, count):
         dom = r.get("domain", "")
         decomp = r.get("decomp", "")
         search = html.escape((word + " " + gloss).lower(), quote=True)
+        wesc = html.escape(word)
         body.append(
             '<tr class="dict-row" data-family="%s" data-search="%s">'
-            '<td class="fa">%s</td><td>%s</td>'
+            '<td class="fa">%s <button class="say-btn" data-say="%s" '
+            'aria-label="Hear %s" title="Hear it">&#128266;</button></td><td>%s</td>'
             '<td><span class="badge">%s</span></td><td class="decomp">%s</td></tr>'
-            % (html.escape(dom, quote=True), search, html.escape(word),
+            % (html.escape(dom, quote=True), search, wesc,
+               html.escape(word, quote=True), wesc,
                html.escape(gloss), html.escape(DOMAIN_LABEL.get(dom, dom)),
                html.escape(decomp)))
     return """
@@ -508,6 +513,87 @@ def build_contribute():
 """ % (repo_attr, fam_options, btn, note, legend)
 
 
+def build_pronounce():
+    vowels = [
+        ("a", "/a/", "father", "wa", "I / me"),
+        ("e", "/e/", "bet (a bit tenser)", "we", "you"),
+        ("i", "/i/", "machine", "wi", "he / she / they"),
+        ("o", "/o/", "go", "wo", "this / here"),
+        ("u", "/u/", "flute", "wu", "that / there"),
+    ]
+    cons = [
+        ("p", "/p/", "spin", "pa", "person"), ("t", "/t/", "stop", "te", "thing"),
+        ("k", "/k/", "skip", "ka", "go"), ("f", "/f/", "fun", "fa", "speak"),
+        ("s", "/s/", "sun", "sa", "water"), ("h", "/h/", "hat", "ha", "is / does"),
+        ("m", "/m/", "man", "ma", "know"), ("n", "/n/", "no", "no", "time"),
+        ("l", "/l/", "love", "la", "good"), ("w", "/w/", "water", "wa", "I"),
+        ("j", "/j/", "yes  (the y-sound!)", "ju", "you"),
+    ]
+
+    def rows(data):
+        return "".join(
+            '<tr><td class="fa">%s</td><td class="ipa">%s</td><td>as in <em>%s</em></td>'
+            '<td><span class="fa">%s</span> &middot; %s '
+            '<button class="say-btn" data-say="%s" aria-label="Hear %s" title="Hear it">&#128266;</button></td></tr>'
+            % (letter, html.escape(ipa), html.escape(kw), ex, html.escape(gloss),
+               html.escape(ex, quote=True), html.escape(ex))
+            for letter, ipa, kw, ex, gloss in data)
+
+    samples = [
+        ("faleni", "the name: FA-le-ni"),
+        ("wa ha mu we", "I love you"),
+        ("la nami", "good morning"),
+        ("we ha me kema jeta", "what do you want to eat?"),
+    ]
+    sample_rows = "".join(
+        '<li><span class="fa">%s</span> <button class="say-btn" data-say="%s" '
+        'aria-label="Hear it" title="Hear it">&#128266;</button> &mdash; %s</li>'
+        % (html.escape(fa), html.escape(fa, quote=True), html.escape(en))
+        for fa, en in samples)
+
+    return """
+<section class="hero" style="padding-bottom:8px">
+  <h1>How Faleni sounds</h1>
+  <p class="tagline">16 sounds, each said exactly one way. Learn them once and you
+  can pronounce every word.</p>
+</section>
+
+<section class="section">
+  <p class="lead">Three rules cover all of pronunciation:</p>
+  <ul>
+    <li><strong>One letter, one sound</strong> &mdash; always. No silent letters, no exceptions.</li>
+    <li><strong>Stress the first syllable</strong> of every word (<span class="fa">FA</span>-le-ni).</li>
+    <li><strong><span class="fa">j</span> = English &ldquo;y&rdquo;</strong> &mdash; the one thing to remember
+      (<span class="fa">ju</span> = &ldquo;you&rdquo;).</li>
+  </ul>
+  <p class="speech-note muted">&#128266; buttons read the word with your browser's speech
+  engine &mdash; a close approximation. The IPA and English keyword are the exact target.</p>
+</section>
+
+<section class="section">
+  <h2>The 5 vowels</h2>
+  <p>Pure vowels, like Spanish or Japanese &mdash; never gliding. (The examples are the
+  pronouns, which differ only by their vowel.)</p>
+  <table class="dict sound-table"><thead><tr><th>Letter</th><th>Sound</th><th>Like</th><th>Example</th></tr></thead>
+  <tbody>%s</tbody></table>
+</section>
+
+<section class="section">
+  <h2>The 11 consonants</h2>
+  <table class="dict sound-table"><thead><tr><th>Letter</th><th>Sound</th><th>Like</th><th>Example</th></tr></thead>
+  <tbody>%s</tbody></table>
+  <p class="muted">Voicing doesn't change meaning, so a softer <em>b / d / g / v / z</em> for
+  <span class="fa">p / t / k / f / s</span> is still understood &mdash; say what's comfortable.</p>
+</section>
+
+<section class="section">
+  <h2>Hear whole phrases</h2>
+  <ul>%s</ul>
+  <p>Every word in the <a href="dictionary.html">dictionary</a> has a &#128266; button too.</p>
+</section>
+""" % (rows(vowels), rows(cons), sample_rows)
+
+
 def main():
     rows = load_lexicon()
     count = len(rows)
@@ -528,6 +614,9 @@ def main():
          build_index(rows, count), "home"),
         ("learn.html", "Learn Faleni", "Three lessons to start speaking Faleni.",
          build_learn(), "learn"),
+        ("pronounce.html", "Faleni pronunciation",
+         "Hear how Faleni sounds — the 16 sounds, each with audio and an English keyword.",
+         build_pronounce(), "sounds"),
         ("dictionary.html", "Faleni dictionary",
          "Search every Faleni word, filterable by meaning-family.",
          build_dictionary(rows, count), "dict"),
