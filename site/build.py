@@ -57,6 +57,7 @@ LINK_MAP = {
     "compounds.md": "compounds.html", "readme.md": "index.html", "lexicon.csv": "dictionary.html",
     "lesson-1.md": "lesson-1.html", "lesson-2.md": "lesson-2.html",
     "lesson-3.md": "lesson-3.html", "lesson-4.md": "lesson-4.html",
+    "lesson-5.md": "lesson-5.html", "lesson-6.md": "lesson-6.html",
     "faleni.py": "contribute.html", "contributing.md": "contribute.html",
 }
 
@@ -80,6 +81,7 @@ _FRIENDLY = {
     "lexicon.csv": "the dictionary", "README.md": "the overview",
     "CONTRIBUTING.md": "Contributing", "lesson-1.md": "Lesson 1",
     "lesson-2.md": "Lesson 2", "lesson-3.md": "Lesson 3", "lesson-4.md": "Lesson 4",
+    "lesson-5.md": "Lesson 5", "lesson-6.md": "Lesson 6",
 }
 
 
@@ -290,6 +292,48 @@ def md_to_html(text):
     return _friendly_link_text(_rewrite_links(body))
 
 
+# ------------------------------------------------------------ audio links ---
+# Every Faleni word in the prose (not just the lesson cards) should be tappable
+# so the course is genuinely "hear before you read". We tag any inline <code>
+# span whose tokens are ALL real Faleni words with data-say; the existing audio
+# pipeline (gen_audio.py scrapes data-say, synthesizes per word AND per phrase)
+# then renders a natural clip for it, and app.js plays it on click/Enter.
+_VOCAB = set()                                     # filled by main() from the lexicon
+_EDGE = ".,!?;:…—–·()[]{}\"'"                      # punctuation stripped from token edges
+
+
+def _faleni_say(text):
+    """If every whitespace token in `text` is a Faleni word, return the cleaned
+    spoken string (lowercase, edge punctuation removed); else None."""
+    out = []
+    for tok in text.split():
+        t = tok.strip(_EDGE).lower()
+        if not t:
+            continue
+        if t not in _VOCAB:
+            return None
+        out.append(t)
+    return " ".join(out) if out else None
+
+
+def _linkify_audio(body):
+    """Make inline-code Faleni words/phrases tap-to-hear. Single-line only, so
+    fenced <pre><code> blocks are left alone."""
+    if not _VOCAB:
+        return body
+
+    def repl(m):
+        inner = m.group(1)
+        say = _faleni_say(inner)
+        if not say:
+            return m.group(0)
+        return ('<code class="fa-say" data-say="%s" role="button" tabindex="0" '
+                'aria-label="Hear %s">%s</code>'
+                % (html.escape(say, quote=True), html.escape(say), inner))
+
+    return re.sub(r"<code>([^<\n]*)</code>", repl, body)
+
+
 # ------------------------------------------------------------------ pages ---
 def nav_html(active, current_href):
     out = []
@@ -359,12 +403,62 @@ def _extract_cards(md):
     return re.sub(r"(?ms)^::cards[ \t]*\n(.*?)\n::[ \t]*$", repl, md), cards
 
 
+def render_quiz(prompt, items):
+    """A listening multiple-choice block. Authored as:
+        ::quiz
+        Listen and choose the meaning.          (optional prompt line, no '=')
+        wa ha lunu = I'm tired | I'm hungry | I'm happy   (first option = correct)
+        ::
+    Options are shuffled in the browser so the answer isn't always first."""
+    qs = []
+    for fa, opts in items:
+        say = _faleni_say(fa) or ""
+        playbtn = ('<button class="say-btn quiz-play" data-say="%s" aria-label="Hear it" '
+                   'title="Hear it">&#128266;</button>' % html.escape(say, quote=True))
+        obtns = "".join(
+            '<button class="quiz-opt" type="button" data-correct="%d">%s</button>'
+            % (1 if i == 0 else 0, html.escape(o)) for i, o in enumerate(opts))
+        qs.append(
+            '<div class="quiz-q"><div class="quiz-prompt"><span class="fa">%s</span> %s</div>'
+            '<div class="quiz-opts">%s</div></div>'
+            % (html.escape(fa), playbtn, obtns))
+    pj = ('<p class="muted">%s</p>' % html.escape(prompt)) if prompt else ""
+    return '<div class="quiz">%s%s</div>' % (pj, "".join(qs))
+
+
+def _extract_quiz(md):
+    """Replace `::quiz ... ::` blocks with placeholders; return (md, [quiz_html])."""
+    blocks = []
+
+    def repl(m):
+        prompt, items = "", []
+        for line in m.group(1).strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            if "=" not in line:
+                if not items:
+                    prompt = line                  # leading text line = the instruction
+                continue
+            fa, rest = line.split("=", 1)
+            opts = [o.strip() for o in rest.split("|") if o.strip()]
+            if fa.strip() and len(opts) >= 2:
+                items.append((fa.strip(), opts))
+        blocks.append(render_quiz(prompt, items))
+        return '\n\n<div data-quiz="%d"></div>\n\n' % (len(blocks) - 1)
+
+    return re.sub(r"(?ms)^::quiz[ \t]*\n(.*?)\n::[ \t]*$", repl, md), blocks
+
+
 def doc_page(md_filename):
     md = read(os.path.join(ROOT, md_filename))
-    md2, cards = _extract_cards(md)
-    body = md_to_html(md2)
+    md, cards = _extract_cards(md)
+    md, quizzes = _extract_quiz(md)
+    body = _linkify_audio(md_to_html(md))
     for i, c in enumerate(cards):
         body = body.replace('<div data-cards="%d"></div>' % i, c)
+    for i, q in enumerate(quizzes):
+        body = body.replace('<div data-quiz="%d"></div>' % i, q)
     return '<article class="prose">%s</article>' % body
 
 
@@ -391,8 +485,10 @@ def build_index(rows, count):
         ("neka, wa jo ha ka nosa ti famu", "Tomorrow, we go to school."),
     ]
     sample_html = "".join(
-        '<div class="sample"><span class="fa">%s</span><span class="en">%s</span></div>'
-        % (html.escape(fa), html.escape(en)) for fa, en in samples)
+        '<div class="sample"><span class="fa fa-say" data-say="%s" role="button" '
+        'tabindex="0" aria-label="Hear it">%s</span><span class="en">%s</span></div>'
+        % (html.escape(_faleni_say(fa) or "", quote=True), html.escape(fa), html.escape(en))
+        for fa, en in samples)
     return """
 <section class="hero">
   <h1>Faleni</h1>
@@ -445,6 +541,10 @@ def build_learn():
          "Verbs, objects, open questions, plurals, possession, counting."),
         ("lesson-4.html", "Lesson 4 — Describing your world",
          "Adjectives, adverbs, time, space, comparison, and building new words."),
+        ("lesson-5.html", "Lesson 5 — Food &amp; home",
+         "Name food, order politely, and build kitchen, restaurant and the three meals."),
+        ("lesson-6.html", "Lesson 6 — A day, family &amp; shopping",
+         "Introduce your family, narrate a day, and get through a shop."),
     ]
     cards = "".join(
         '<div class="card"><h2><a href="%s">%s</a></h2><p class="muted">%s</p></div>'
@@ -677,6 +777,7 @@ def build_sounds():
 def main():
     rows = load_lexicon()
     count = len(rows)
+    _VOCAB.update((r.get("word") or "").strip().lower() for r in rows if (r.get("word") or "").strip())
 
     if os.path.isdir(DIST):
         shutil.rmtree(DIST)
@@ -710,6 +811,12 @@ def main():
         ("lesson-4.html", "Faleni Lesson 4 — Describing your world",
          "Adjectives, time, space, comparison, compounds.",
          doc_page(os.path.join("lessons", "lesson-4.md")), "learn"),
+        ("lesson-5.html", "Faleni Lesson 5 — Food & home",
+         "Name food, order politely, build kitchen/restaurant/meals.",
+         doc_page(os.path.join("lessons", "lesson-5.md")), "learn"),
+        ("lesson-6.html", "Faleni Lesson 6 — A day, family & shopping",
+         "Family, a day's routine, shopping and money, politeness.",
+         doc_page(os.path.join("lessons", "lesson-6.md")), "learn"),
         ("contribute.html", "Contribute to Faleni",
          "Propose a new word; the validator and a maintainer keep it clean.",
          build_contribute(), "contribute"),

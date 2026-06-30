@@ -526,4 +526,12 @@ amu,root,even,,logic,
 ale,root,still/yet,,logic,
 alo,root,already,,logic,
 ju,particle,(ongoing marker),,grammar,optional; marks an action in progress
+sufe,root,bread,,nature,
+somuni,root,rice,,nature,3-syllable to stay distinct from sufe (bread)
+sumela,root,fruit,,nature,
+sapoti,root,meat,,nature,
+salomi,root,milk,,nature,
+kaluwe,root,wake/wake up,,action,
+foso,root,please,,speech,added after a request: kesu sa foso = water please
+fofu,root,sorry/excuse me,,speech,apology and "excuse me"
 

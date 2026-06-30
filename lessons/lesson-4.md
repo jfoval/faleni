@@ -103,6 +103,34 @@ A Faleni speaker decodes these on sight. (See [compounds.md](../compounds.md) fo
 
 ## Practice
 
+### 1. Listen & choose
+
+Tap 🔊, listen, then pick what it means.
+
+::quiz
+sope wa ha le = My dog is big | My dog is new | Your dog is big
+wa ha kali liwa = I walk fast | I walk quietly | I run fast
+sopo ha niwi tu = The cat is in the house | The cat is on the house | The cat is far from the house
+wa ha le nelo ame we = I'm bigger than you | I'm the biggest | You're bigger than me
+::
+
+### 2. Read & understand
+
+Read each aloud, then reveal the meaning.
+
+- `tu wa ha lewi.`
+- `wa ha ka neka.`
+- `sopo ha nije tato.`
+
+<details><summary>Meanings</summary>
+
+1. My house is new.
+2. I'll go tomorrow.
+3. The cat is under the table.
+</details>
+
+### 3. Say it in Faleni
+
 Translate to Faleni:
 1. My house is new.
 2. The dog runs fast. (`kawu` = run)
@@ -121,7 +149,8 @@ Translate to Faleni:
 
 ---
 
-### Where to go next
-You now have the whole core grammar and ~500 words. Keep going by reading
-[compounds.md](../compounds.md), browsing [lexicon.csv](../lexicon.csv), and
-coining words with `python3 tools/faleni.py` (see [COINAGE.md](../COINAGE.md)).
+You now have the whole core grammar and the compounding superpower. The last two
+lessons put it to work on everyday life — food, family, a daily routine, and
+shopping.
+
+**Next:** [Lesson 5 — Food & home](lesson-5.md) →

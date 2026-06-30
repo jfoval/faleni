@@ -262,16 +262,28 @@ def cmd_lint():
              if os.path.isdir(ldir) else [])
     span = re.compile(r"`([^`]+)`")
     edge = re.compile(r"^[^a-z]+|[^a-z]+$")
+    # ::cards / ::quiz blocks: the part LEFT of '=' is Faleni (right side is English).
+    block = re.compile(r"(?ms)^::(?:cards|quiz)[ \t]*\n(.*?)\n::[ \t]*$")
     problems = []
+
+    def check(raw, fn):
+        tok = edge.sub("", raw.lower())
+        if tok and is_legal(tok) and tok not in known and tok not in ignore:
+            problems.append((fn, tok))
+
     for path in files:
         if not os.path.exists(path):
             continue
         text = open(path, encoding="utf-8").read()
+        fn = os.path.basename(path)
         for s in span.findall(text):
             for raw in s.split():
-                tok = edge.sub("", raw.lower())
-                if tok and is_legal(tok) and tok not in known and tok not in ignore:
-                    problems.append((os.path.basename(path), tok))
+                check(raw, fn)
+        for blk in block.findall(text):
+            for line in blk.splitlines():
+                if "=" in line:
+                    for raw in line.split("=", 1)[0].split():
+                        check(raw, fn)
     if problems:
         print("Unknown Faleni-looking tokens (legal shape but not in the lexicon):")
         for fn, tok in sorted(set(problems)):

@@ -91,6 +91,34 @@ Greeting = `la` (good) + the time of day:
 
 ## Practice
 
+### 1. Listen & choose
+
+Tap 🔊, listen, then pick what it means.
+
+::quiz
+wa ha masu = I'm happy | I'm tired | I'm hungry
+we ha he luje = You're not hungry | You're hungry | I'm not hungry
+we ha lulu ho = Are you healthy? | Are you tired? | You're healthy.
+la noti = good night | good morning | goodbye
+::
+
+### 2. Read & understand
+
+Read each line aloud (tap to check your pronunciation), then reveal the meaning.
+
+- `wi ha lunu.`
+- `wa ha he masu.`
+- `fone we ha jeta?`
+
+<details><summary>Meanings</summary>
+
+1. He/she is tired.
+2. I'm not happy.
+3. What's your name?
+</details>
+
+### 3. Say it in Faleni
+
 Translate to Faleni:
 1. I'm tired.
 2. You're not happy.

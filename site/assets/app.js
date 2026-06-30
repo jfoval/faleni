@@ -127,15 +127,44 @@
   function slugify(s) {
     return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
   }
+  function playClip(slug) {                        // resolves when the clip finishes
+    return new Promise(function (resolve, reject) {
+      var a = new Audio("assets/audio/" + slug + ".mp3");
+      a.addEventListener("ended", resolve);
+      a.addEventListener("error", reject);
+      a.play().catch(reject);
+    });
+  }
+  function playWords(words, i) {                    // play each word's clip in sequence
+    if (i >= words.length) return;
+    playClip(slugify(words[i])).then(
+      function () { setTimeout(function () { playWords(words, i + 1); }, 120); },
+      function () { speakTTS(words.slice(i).join(" ")); }   // missing clip -> TTS the rest
+    );
+  }
   function playSay(text) {
-    try {
-      var a = new Audio("assets/audio/" + slugify(text) + ".mp3");
-      a.play().catch(function () { speakTTS(text); });   // no clip -> TTS fallback
-    } catch (e) { speakTTS(text); }
+    var words = (text || "").trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return;
+    // Prefer the natural full-phrase clip; if it's missing, chain the word clips;
+    // only if even those are absent do we fall back to the browser speech engine.
+    playClip(slugify(text)).catch(function () {
+      if (words.length > 1) playWords(words, 0);
+      else speakTTS(text);
+    });
   }
   document.addEventListener("click", function (e) {
     var btn = e.target && e.target.closest && e.target.closest("[data-say]");
     if (btn) { e.preventDefault(); playSay(btn.getAttribute("data-say")); }
+  });
+  // Keyboard activation for tap-to-hear words that aren't native buttons
+  // (the <code>/<span> tokens get role="button" + tabindex="0").
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " " && e.key !== "Spacebar") return;
+    var el = e.target;
+    if (!el || !el.getAttribute || el.getAttribute("role") !== "button") return;
+    if (el.tagName === "BUTTON" || el.tagName === "A") return;   // those fire click natively
+    var say = el.getAttribute("data-say");
+    if (say) { e.preventDefault(); playSay(say); }
   });
 
   // --- Lesson cards: reveal the meaning after you've heard & said the word ---
@@ -151,4 +180,32 @@
       r.setAttribute("aria-expanded", show ? "true" : "false");
     }
   });
+
+  // --- Listening quiz: tap the play button, then choose the meaning ---
+  document.addEventListener("click", function (e) {
+    var opt = e.target && e.target.closest && e.target.closest(".quiz-opt");
+    if (!opt) return;
+    var q = opt.closest(".quiz-q");
+    if (!q || q.classList.contains("done")) return;     // locked once answered correctly
+    if (opt.getAttribute("data-correct") === "1") {
+      opt.classList.add("is-correct");
+      q.classList.add("done");
+    } else {
+      opt.classList.add("is-wrong");
+      opt.setAttribute("disabled", "");                 // can't re-pick the same wrong one
+    }
+  });
+  // Shuffle each question's options so the correct one isn't always first.
+  (function () {
+    var groups = document.querySelectorAll(".quiz-opts");
+    for (var g = 0; g < groups.length; g++) {
+      var box = groups[g];
+      var kids = Array.prototype.slice.call(box.children);
+      for (var i = kids.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = kids[i]; kids[i] = kids[j]; kids[j] = t;
+      }
+      kids.forEach(function (k) { box.appendChild(k); });
+    }
+  })();
 })();
