@@ -680,9 +680,7 @@ def main():
 
     if os.path.isdir(DIST):
         shutil.rmtree(DIST)
-    os.makedirs(os.path.join(DIST, "assets"))
-    for fn in os.listdir(ASSETS):
-        shutil.copy(os.path.join(ASSETS, fn), os.path.join(DIST, "assets", fn))
+    shutil.copytree(ASSETS, os.path.join(DIST, "assets"))   # style.css, app.js, audio/
 
     pages = [
         ("index.html", "Faleni — the easy tongue",

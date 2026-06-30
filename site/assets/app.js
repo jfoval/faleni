@@ -90,58 +90,53 @@
     update();
   }
 
-  // --- Pronunciation: speak any Faleni word via the browser's speech engine ---
-  // Faleni is perfectly phonemic, so we respell it into English-phonetic syllables
-  // (pure vowels, j -> y) and let the synthesizer read it. Stress is first-syllable.
+  // --- Pronunciation: play the FIXED pre-generated clip (rendered from explicit
+  // phonemes, so it's correct + identical for everyone). Fall back to the browser's
+  // speech engine only if a clip happens to be missing. ---
   var synth = window.speechSynthesis;
-  if (!synth) {
-    document.documentElement.classList.add("no-speech");   // CSS hides the buttons
-  } else {
-    // English-phonetic cues a TTS voice reads reliably. "oe" (toe/foe/woe) is a
-    // far more dependable /o/ than "oh", which many voices flatten toward /a/.
-    var VOWEL = { a: "ah", e: "eh", i: "ee", o: "oe", u: "oo" };
-    var ONSET = { p: "p", t: "t", k: "k", f: "f", s: "s", h: "h",
-                  m: "m", n: "n", l: "l", w: "w", j: "y" };
-    var faleniToSpeech = function (text) {
-      return text.toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/)
-        .filter(Boolean).map(function (word) {
-          var syl = word.match(/[ptkfshmnlwj]?[aeiou]/g) || [];
-          return syl.map(function (s) {
-            var v = s.charAt(s.length - 1);
-            var on = s.length > 1 ? (ONSET[s.charAt(0)] || "") : "";
-            return on + VOWEL[v];
-          }).join("");                      // one token per word = better word-prosody, clearer final vowel
-        }).join(", ");
-    };
-    // Voices can populate asynchronously; prime them so getVoices() isn't empty.
-    var primeVoices = function () { try { synth.getVoices(); } catch (e) {} };
-    primeVoices();
-    if ("onvoiceschanged" in synth) synth.onvoiceschanged = primeVoices;
-    var pickVoice = function () {
-      var vs = synth.getVoices() || [];
-      var en = vs.filter(function (v) { return /^en/i.test(v.lang); });
-      var local = en.filter(function (v) { return v.localService; });
-      return local[0] || en[0] || null;          // prefer an on-device English voice
-    };
-    var speak = function (text) {
-      var phon = faleniToSpeech(text);
-      if (!phon) return;
-      try {
-        if (synth.speaking || synth.pending) synth.cancel();
-        synth.resume();                           // Chrome silently pauses when idle
-        var u = new SpeechSynthesisUtterance(phon);
-        u.lang = "en-US";
-        u.rate = 0.85;
-        var v = pickVoice();
-        if (v) u.voice = v;
-        synth.speak(u);
-      } catch (e) { /* ignore */ }
-    };
-    document.addEventListener("click", function (e) {
-      var btn = e.target && e.target.closest && e.target.closest("[data-say]");
-      if (btn) { e.preventDefault(); speak(btn.getAttribute("data-say")); }
-    });
+  var VOWEL = { a: "ah", e: "eh", i: "ee", o: "oe", u: "oo" };
+  var ONSET = { p: "p", t: "t", k: "k", f: "f", s: "s", h: "h",
+                m: "m", n: "n", l: "l", w: "w", j: "y" };
+  function faleniToSpeech(text) {
+    return text.toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/)
+      .filter(Boolean).map(function (word) {
+        var syl = word.match(/[ptkfshmnlwj]?[aeiou]/g) || [];
+        return syl.map(function (s) {
+          var v = s.charAt(s.length - 1);
+          var on = s.length > 1 ? (ONSET[s.charAt(0)] || "") : "";
+          return on + VOWEL[v];
+        }).join("");
+      }).join(", ");
   }
+  function speakTTS(text) {                       // fallback only
+    if (!synth) return;
+    var phon = faleniToSpeech(text);
+    if (!phon) return;
+    try {
+      if (synth.speaking || synth.pending) synth.cancel();
+      synth.resume();
+      var u = new SpeechSynthesisUtterance(phon);
+      u.lang = "en-US"; u.rate = 0.85;
+      var vs = (synth.getVoices() || []).filter(function (v) { return /^en/i.test(v.lang); });
+      var local = vs.filter(function (v) { return v.localService; });
+      var voice = local[0] || vs[0];
+      if (voice) u.voice = voice;
+      synth.speak(u);
+    } catch (e) { /* ignore */ }
+  }
+  function slugify(s) {
+    return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+  }
+  function playSay(text) {
+    try {
+      var a = new Audio("assets/audio/" + slugify(text) + ".mp3");
+      a.play().catch(function () { speakTTS(text); });   // no clip -> TTS fallback
+    } catch (e) { speakTTS(text); }
+  }
+  document.addEventListener("click", function (e) {
+    var btn = e.target && e.target.closest && e.target.closest("[data-say]");
+    if (btn) { e.preventDefault(); playSay(btn.getAttribute("data-say")); }
+  });
 
   // --- Lesson cards: reveal the meaning after you've heard & said the word ---
   document.addEventListener("click", function (e) {
