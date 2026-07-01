@@ -163,7 +163,8 @@ Translate to Faleni:
 ### Next
 
 You can now talk about how you feel and handle being unwell — all without a
-single new rule. Keep going: **Lesson 8** turns to work, study and getting
-around town. Meanwhile, browse the [dictionary](dictionary.html) (every word has
+single new rule. Keep going: **[Lesson 8 — Work, study &amp; getting
+around](lesson-8.html)** turns to your job, your studies, and finding your way
+across town. Meanwhile, browse the [dictionary](dictionary.html) (every word has
 a 🔊) and keep the [compound cheat-sheet](compounds.html) close — the `m-`
 feelings and `kose` fixes are just the start of what you can already build.

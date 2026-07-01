@@ -19,6 +19,8 @@ fall straight out of the engine. Use them as patterns and make your own.
 | `tepa kumi` | room + sleep | bedroom |
 | `tepa koje` | room + wash | bathroom |
 | `ti towa` | place + work | office |
+| `tepe famu` | building + learn | school building |
+| `ti taji loni` | place + train | (train) station |
 | `tepe kose` | building + fix | hospital |
 | `tu tomi` | house + money | bank |
 | `tefa kuwi` | field + fly | airport |
@@ -58,8 +60,10 @@ fall straight out of the engine. Use them as patterns and make your own.
 | `teku kujo` | tool + fight | weapon |
 | `teku taha ne` | tool + wheel + two | bicycle |
 | `taji loni` | car + long | train |
+| `taji le` | car + big | bus |
 | `te kose` | thing + fix | medicine |
 | `tefo kilu` | paper + enter | ticket |
+| `towa famu` | work + learn | homework |
 
 ## Food & drink
 | Faleni | Parts | Meaning |

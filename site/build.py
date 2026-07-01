@@ -58,7 +58,7 @@ LINK_MAP = {
     "lesson-1.md": "lesson-1.html", "lesson-2.md": "lesson-2.html",
     "lesson-3.md": "lesson-3.html", "lesson-4.md": "lesson-4.html",
     "lesson-5.md": "lesson-5.html", "lesson-6.md": "lesson-6.html",
-    "lesson-7.md": "lesson-7.html",
+    "lesson-7.md": "lesson-7.html", "lesson-8.md": "lesson-8.html",
     "faleni.py": "contribute.html", "contributing.md": "contribute.html",
 }
 
@@ -83,6 +83,7 @@ _FRIENDLY = {
     "CONTRIBUTING.md": "Contributing", "lesson-1.md": "Lesson 1",
     "lesson-2.md": "Lesson 2", "lesson-3.md": "Lesson 3", "lesson-4.md": "Lesson 4",
     "lesson-5.md": "Lesson 5", "lesson-6.md": "Lesson 6", "lesson-7.md": "Lesson 7",
+    "lesson-8.md": "Lesson 8",
 }
 
 
@@ -548,6 +549,8 @@ def build_learn():
          "Introduce your family, narrate a day, and get through a shop."),
         ("lesson-7.html", "Lesson 7 — Feelings &amp; health",
          "Say how you feel, ask why, and get through a doctor&rsquo;s visit &mdash; with no new grammar."),
+        ("lesson-8.html", "Lesson 8 — Work, study &amp; getting around",
+         "Talk about your job and studies, and find your way across town &mdash; still no new rules."),
     ]
     cards = "".join(
         '<div class="card"><h2><a href="%s">%s</a></h2><p class="muted">%s</p></div>'
@@ -790,7 +793,7 @@ def main():
         ("index.html", "Faleni — the easy tongue",
          "An efficient, fully original constructed language with a systematic word engine.",
          build_index(rows, count), "home"),
-        ("learn.html", "Learn Faleni", "Hear, say, then speak — seven lessons, audio-first.",
+        ("learn.html", "Learn Faleni", "Hear, say, then speak — eight lessons, audio-first.",
          build_learn(), "learn"),
         ("dictionary.html", "Faleni dictionary",
          "Search every Faleni word, filterable by meaning-family.",
@@ -823,6 +826,9 @@ def main():
         ("lesson-7.html", "Faleni Lesson 7 — Feelings & health",
          "Feelings (the m- family), love and comparison, being unwell, and the doctor.",
          doc_page(os.path.join("lessons", "lesson-7.md")), "learn"),
+        ("lesson-8.html", "Faleni Lesson 8 — Work, study & getting around",
+         "Jobs (pa- compounds), study (the f- family), transport, and asking directions.",
+         doc_page(os.path.join("lessons", "lesson-8.md")), "learn"),
         ("contribute.html", "Contribute to Faleni",
          "Propose a new word; the validator and a maintainer keep it clean.",
          build_contribute(), "contribute"),
