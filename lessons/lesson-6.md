@@ -141,6 +141,9 @@ Translate to Faleni:
 Six lessons in, you have the **whole grammar** and the everyday vocabulary to
 introduce yourself, get through a day, eat, and shop — all by ear. From here:
 
+- **Keep going with [Lesson 7 — Feelings &amp; health](lesson-7.html)**: the first
+  of the *going-further* lessons, and proof of the design — it adds no new grammar
+  at all.
 - Keep the [compound cheat-sheet](compounds.html) handy and **invent words** you
   were never taught.
 - Browse the [dictionary](dictionary.html) — every word has a 🔊.
